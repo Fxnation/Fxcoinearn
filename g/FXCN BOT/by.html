@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Cards Grid</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 columns */
+            gap: 30px;
+            padding: 20px;
+            width: 800px;
+        }
+        .card {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            background-color: #f8f8f8;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .card img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .hidden {
+            display: none;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .popup {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 300px;
+        }
+        .popup h3 {
+            margin-bottom: 10px;
+        }
+        .popup button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            border: none;
+            background-color: #333;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- First grid of cards -->
+<div class="card-container" id="firstCardContainer">
+    <div class="card" id="bullMarketCard">
+        <img src="./images/FXC.png" alt="Bull Market">
+        <h3>Bull Market</h3>
+        <p>All coins are rising</p>
+        <p>Profit per hour: +0.2</p>
+        <p>Cost: 3 diamonds</p>
+        <a href="" class="btn">Purchase</a>
+    </div>
+    <div class="card" id="hamsterDateCard">
+        <img src="./images/FXC.png" alt="Hamster on a date">
+        <h3>Hamster on a date</h3>
+        <p>Met your love</p>
+        <p>Profit per hour: +0.1</p>
+        <p>Cost: 1 diamond</p>
+        <a href="" class="btn">Purchase</a>
+    </div>
+
+    <div class="card" id="shoppingCard">
+        <img src="./images/FXC.png" alt="Shopping">
+        <h3>Shopping</h3>
+        <p>Pleasant emotions</p>
+        <p>Profit per hour: +0.1</p>
+        <p>Cost: 2 diamonds</p>
+        <a href="" class="btn">Purchase</a>
+    </div>
+    <div class="card" id="buyApartmentCard">
+        <img src="./images/FXC.png" alt="Buying an apartment">
+        <h3>Buying an apartment</h3>
+        <p>Your own home</p>
+        <p>Profit per hour: +0.1</p>
+        <p>Cost: 2 diamonds</p>
+        <a href="" class="btn">Purchase</a>
+    </div>
+</div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hexa Puzzle</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .hex-grid {
+            display: flex;
+            flex-wrap: wrap;
+            width: 300px;
+            margin-top: 50px;
+        }
+
+        .hex {
+            width: 60px;
+            height: 60px;
+            background-color: #8fc1d4;
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+            margin: 5px;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: gold;
+            font-size: 20px;
+            font-weight: bold;
+            user-select: none;
+        }
+
+        .hex:hover {
+            background-color: #67a0b2;
+        }
+
+        .hex.active {
+            background-color: #ff6f61;
+        }
+
+        .status {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .coin-display {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .claim-exit {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #ff6f61;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .claim-exit:hover {
+            background-color: #ff4b3a;
+        }
+
+        .coin-count-container {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .coin-count-container img {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="hex-grid" id="hexGrid"></div>
+    <div class="status" id="status">Click two identical numbers to combine!</div>
+    <div class="coin-display" id="coinDisplay">Total FXCoins: 0</div>
+    <button class="claim-exit" id="claimExitButton">Claim and Exit</button>
+    
+    <div class="coin-count-container">
+        <img src="./images/FXC.png" width="50px">
+        <h1 class="select-none" id="coinCounter">0</h1>
+    </div>
+
+    <script>
+        const hexGrid = document.getElementById('hexGrid');
+        const status = document.getElementById('status');
+        const coinDisplay = document.getElementById('coinDisplay');
+        const claimExitButton = document.getElementById('claimExitButton');
+        const coinCounter = document.getElementById('coinCounter');
+        let activeHex = null;
+        let totalFxCoin = 0; // Earned FXCoins not yet claimed
+        let claimedFxCoin = parseInt(localStorage.getItem('claimedFxCoin') || '0'); // Load claimed FXCoins from storage
+        let gridSize = 5;
+
+        // Update the displayed claimed FXCoins
+        coinCounter.textContent = claimedFxCoin;
+
+        const createHexagon = (number) => {
+            const hex = document.createElement('div');
+            hex.classList.add('hex');
+            hex.textContent = number;
+            hex.dataset.number = number;
+            hex.style.color = getColorByNumber(number);
+            hex.addEventListener('click', () => handleHexClick(hex));
+            return hex;
+        };
+
+        const getColorByNumber = (number) => {
+            if (number >= 1 && number <= 5) return 'blue';
+            if (number >= 6 && number <= 15) return 'red';
+            if (number >= 16 && number <= 25) return 'green';
+            if (number >= 26 && number <= 75) return 'purple';
+            return 'gold';
+        };
+
+        const shuffleArray = (array) => array.sort(() => Math.random() - 0.5);
+
+        const initPuzzle = () => {
+            hexGrid.innerHTML = '';
+            const numbers = [];
+            for (let i = 1; i <= gridSize; i++) {
+                numbers.push(1, 1);
+            }
+            shuffleArray(numbers).forEach(number => {
+                const hex = createHexagon(number);
+                hexGrid.appendChild(hex);
+            });
+            hexGrid.style.width = `${gridSize * 60}px`;
+        };
+
+        const generateNewNumber = () => {
+            const newHex = createHexagon(1);
+            hexGrid.appendChild(newHex);
+        };
+
+        const handleHexClick = (hex) => {
+            if (hex.classList.contains('active')) return;
+            hex.classList.add('active');
+
+            if (activeHex === null) {
+                activeHex = hex;
+            } else {
+                if (activeHex.dataset.number === hex.dataset.number) {
+                    const newNumber = parseInt(activeHex.dataset.number) * 2;
+                    const newHex = createHexagon(newNumber);
+                    hexGrid.appendChild(newHex);
+                    activeHex.remove();
+                    hex.remove();
+                    const fxCoinReward = (parseInt(activeHex.dataset.number) + parseInt(hex.dataset.number)) * 10;
+                    totalFxCoin += fxCoinReward;
+                    updateCoinDisplay();
+                    status.textContent = `Combined to form ${newNumber}! FXCoin reward: ${fxCoinReward}`;
+                    generateNewNumber();
+                } else {
+                    status.textContent = 'Numbers do not match, reverting...';
+                    setTimeout(() => {
+                        activeHex.classList.remove('active');
+                        hex.classList.remove('active');
+                        status.textContent = 'Click two identical numbers to combine!';
+                    }, 1000);
+                }
+                activeHex = null;
+            }
+        };
+
+        const updateCoinDisplay = () => {
+            coinDisplay.textContent = `Total FXCoins: ${totalFxCoin}`;
+        };
+
+        const claimAndExit = () => {
+            claimedFxCoin += totalFxCoin; // Move unclaimed FXCoins to claimed
+            coinCounter.textContent = claimedFxCoin; // Update the displayed claimed FXCoins
+            alert(`You have claimed a total of ${totalFxCoin} FXCoins!`);
+            totalFxCoin = 0; // Reset unclaimed FXCoins
+            localStorage.setItem('claimedFxCoin', claimedFxCoin); // Store the updated claimed amount
+            updateCoinDisplay(); // Update display to reflect the reset
+            window.location.reload();
+        };
+
+        claimExitButton.addEventListener('click', claimAndExit);
+
+        initPuzzle();
+        for (let i = 0; i < 3; i++) {
+            generateNewNumber();
+        }
+    </script>     
+    <script src="./assets/js/main.js"></script>
+    <script src="./assets/js/charge.js"></script>        
+</body>
+</html>
