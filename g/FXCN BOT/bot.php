@@ -6,7 +6,7 @@ $chat_id = $update["message"]["chat"]["id"];
 $message = $update["message"]["text"];
 
 if($message == "/start") {
-    sendMessage($chat_id, "What can this bot do and offer! Allows you to earn FXCoin by tapping on the FXCN image,complete task,invite friends and get rewarded.Welcome shareholders to your tap to earn bot CEO:Adebayo david!");
+    sendMessage($chat_id, "Welcome to your new bot!");
 }
 
 function sendMessage($chat_id, $message) {
