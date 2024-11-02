@@ -1,17 +1,28 @@
 <?php
-$content = file_get_contents("php://input");
-$update = json_decode($content, true);
 
-$chat_id = $update["message"]["chat"]["id"];
-$message = $update["message"]["text"];
+$token = '7894607733:AAFQ6wJmKsaiw3TcreOZ5C28khj-4Q2Q9do';  // Replace with your bot token
+$apiURL = "https://api.telegram.org/bot$token/";
 
-if($message == "/start") {
-    sendMessage($chat_id, "Welcome to your new bot!");
+// Get the incoming update
+$update = json_decode(file_get_contents('php://input'), true);
+$chatId = $update['message']['chat']['id'];
+
+// Handle commands
+if (isset($update['message']['text'])) {
+    $text = $update['message']['text'];
+
+    switch ($text) {
+        case '/start':
+            sendMessage($chatId, "Hello! I am your wealth bot.");
+            break;
+        default:
+            sendMessage($chatId, "I don't understand that command.");
+            break;
+    }
 }
 
-function sendMessage($chat_id, $message) {
-    $apiToken = "7894607733:AAFQ6wJmKsaiw3TcreOZ5C28khj-4Q2Q9do";
-    $url = "https://api.telegram.org/bot$apiToken/sendMessage?chat_id=$chat_id&text=".urlencode($message);
+// Function to send messages
+function sendMessage($chatId, $text) {
+    global $apiURL;
+    $url = $apiURL . "sendMessage?chat_id=$chatId&text=" . urlencode($text);
     file_get_contents($url);
-}
-?>
