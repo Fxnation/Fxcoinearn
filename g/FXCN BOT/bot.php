@@ -10,8 +10,8 @@ if($message == "/start") {
 }
 
 function sendMessage($chat_id, $message) {
-    $apiToken = "7369288582:AAHJgLvd8BNMea0VS7FdjzQoEhZ7vGd0mL8";
-    $url = ""$apiToken/sendMessage?chat_id=$chat_id&text=".urlencode($message);
+    $apiToken = "7894607733:AAFQ6wJmKsaiw3TcreOZ5C28khj-4Q2Q9do";
+    $url = "$apiToken/sendMessage?chat_id=$chat_id&text=".urlencode($message);
     file_get_contents($url);
 }
 ?>
